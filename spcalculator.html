@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soul Power Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #3a3a3a;
+            font-family: 'Calibri', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-family: 'Impact', sans-serif;
+            font-size: 48px;
+            color: white;
+            letter-spacing: 2px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #e0e0e0;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .input-group input[type="number"],
+        .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #555;
+            border-radius: 6px;
+            background-color: #2a2a2a;
+            color: #ffffff;
+            font-family: 'Calibri', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .input-group input[type="number"]:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #87ceeb;
+            box-shadow: 0 0 8px rgba(135, 206, 235, 0.3);
+        }
+
+        .input-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+            padding-right: 40px;
+        }
+
+        .custom-select {
+            position: relative;
+        }
+
+        .custom-select-header {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #555;
+            border-radius: 6px;
+            background-color: #2a2a2a;
+            color: #ffffff;
+            font-family: 'Calibri', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .custom-select-header:hover {
+            border-color: #666;
+        }
+
+        .custom-select-header.active {
+            border-color: #87ceeb;
+            box-shadow: 0 0 8px rgba(135, 206, 235, 0.3);
+        }
+
+        .custom-select-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #2a2a2a;
+            border: 2px solid #87ceeb;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            z-index: 1000;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .custom-select-dropdown.active {
+            display: block;
+        }
+
+        .custom-select-option {
+            padding: 12px 15px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .custom-select-option:hover {
+            background-color: #3a3a3a;
+        }
+
+        .custom-select-option.selected {
+            background-color: #87ceeb;
+            color: #1a1a1a;
+            font-weight: bold;
+        }
+
+        .custom-select-arrow {
+            display: flex;
+            align-items: center;
+        }
+
+        .result-group {
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            border: 2px solid #555;
+        }
+
+        .result-group label {
+            display: block;
+            font-size: 14px;
+            color: #e0e0e0;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .result-group .result-value {
+            font-size: 24px;
+            color: #87ceeb;
+            font-weight: bold;
+            word-break: break-all;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-family: 'Calibri', sans-serif;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-calculate {
+            background-color: #87ceeb;
+            color: #1a1a1a;
+        }
+
+        .btn-calculate:hover {
+            background-color: #5db8e8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(135, 206, 235, 0.4);
+        }
+
+        .btn-reset {
+            background-color: #87ceeb;
+            color: #1a1a1a;
+        }
+
+        .btn-reset:hover {
+            background-color: #5db8e8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(135, 206, 235, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            margin-top: auto;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Soul Power Calculator</h1>
+        </div>
+
+        <div class="input-group">
+            <label for="spGoal">SP Goal</label>
+            <input type="number" id="spGoal" placeholder="Enter SP Goal" min="0">
+            <div class="error-message" id="spGoalError">Please enter a valid SP Goal</div>
+        </div>
+
+        <div class="input-group">
+            <label for="awakenedTier">Awakened Tier</label>
+            <div class="custom-select" id="customSelect">
+                <div class="custom-select-header">
+                    <span id="selectedValue">Select an Awakened Tier</span>
+                    <div class="custom-select-arrow">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                </div>
+                <div class="custom-select-dropdown" id="customSelectDropdown">
+                    <div class="custom-select-option" data-value="">Select an Awakened Tier</div>
+                    <div class="custom-select-option" data-value="E-">E-</div>
+                    <div class="custom-select-option" data-value="E">E</div>
+                    <div class="custom-select-option" data-value="E+">E+</div>
+                    <div class="custom-select-option" data-value="D-">D-</div>
+                    <div class="custom-select-option" data-value="D">D</div>
+                    <div class="custom-select-option" data-value="D+">D+</div>
+                    <div class="custom-select-option" data-value="C-">C-</div>
+                    <div class="custom-select-option" data-value="C">C</div>
+                    <div class="custom-select-option" data-value="C+">C+</div>
+                    <div class="custom-select-option" data-value="B-">B-</div>
+                    <div class="custom-select-option" data-value="B">B</div>
+                    <div class="custom-select-option" data-value="B+">B+</div>
+                    <div class="custom-select-option" data-value="A-">A-</div>
+                    <div class="custom-select-option" data-value="A">A</div>
+                    <div class="custom-select-option" data-value="A+">A+</div>
+                    <div class="custom-select-option" data-value="S">S</div>
+                    <div class="custom-select-option" data-value="SS">SS</div>
+                    <div class="custom-select-option" data-value="SSS">SSS</div>
+                    <div class="custom-select-option" data-value="X">X</div>
+                </div>
+            </div>
+            <div class="error-message" id="tierError">Please select an Awakened Tier</div>
+        </div>
+
+        <div class="input-group">
+            <label for="purchasePrice">Purchase Price</label>
+            <input type="number" id="purchasePrice" placeholder="Enter Purchase Price" min="0">
+            <div class="error-message" id="purchasePriceError">Please enter a valid Purchase Price</div>
+        </div>
+
+        <div class="result-group">
+            <label for="numberCopies">Number of Copies Required</label>
+            <div class="result-value" id="numberCopies">-</div>
+        </div>
+
+        <div class="result-group">
+            <label for="sgCost">SG Cost</label>
+            <div class="result-value" id="sgCost">-</div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-calculate" onclick="calculate()">Calculate</button>
+            <button class="btn-reset" onclick="reset()">Reset</button>
+        </div>
+
+        <div class="footer">
+            <p>Made by Kizawk</p>
+        </div>
+    </div>
+
+    <script>
+        const tierValues = {
+            'E-': 0.05,
+            'E': 0.1,
+            'E+': 0.2,
+            'D-': 0.3,
+            'D': 0.5,
+            'D+': 1,
+            'C-': 4.5,
+            'C': 6,
+            'C+': 8,
+            'B-': 10,
+            'B': 18,
+            'B+': 60,
+            'A-': 300,
+            'A': 380,
+            'A+': 700,
+            'S': 1400,
+            'SS': 2500,
+            'SSS': 4000,
+            'X': 6000
+        };
+
+        let selectedTierValue = '';
+
+        // Custom Select Functionality
+        const customSelect = document.getElementById('customSelect');
+        const customSelectHeader = customSelect.querySelector('.custom-select-header');
+        const customSelectDropdown = document.getElementById('customSelectDropdown');
+        const customSelectOptions = customSelectDropdown.querySelectorAll('.custom-select-option');
+        const selectedValue = document.getElementById('selectedValue');
+
+        customSelectHeader.addEventListener('click', function() {
+            customSelectDropdown.classList.toggle('active');
+            customSelectHeader.classList.toggle('active');
+        });
+
+        customSelectOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                selectedTierValue = value;
+                
+                // Update display
+                selectedValue.textContent = this.textContent || 'Select an Awakened Tier';
+                
+                // Remove previous selection styling
+                customSelectOptions.forEach(opt => opt.classList.remove('selected'));
+                if (value) {
+                    this.classList.add('selected');
+                }
+                
+                // Close dropdown
+                customSelectDropdown.classList.remove('active');
+                customSelectHeader.classList.remove('active');
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!customSelect.contains(event.target)) {
+                customSelectDropdown.classList.remove('active');
+                customSelectHeader.classList.remove('active');
+            }
+        });
+
+        function clearErrors() {
+            document.getElementById('spGoalError').classList.remove('show');
+            document.getElementById('tierError').classList.remove('show');
+            document.getElementById('purchasePriceError').classList.remove('show');
+        }
+
+        function validate() {
+            clearErrors();
+            let isValid = true;
+
+            const spGoal = parseFloat(document.getElementById('spGoal').value);
+            if (isNaN(spGoal) || spGoal <= 0) {
+                document.getElementById('spGoalError').classList.add('show');
+                isValid = false;
+            }
+
+            if (!selectedTierValue) {
+                document.getElementById('tierError').classList.add('show');
+                isValid = false;
+            }
+
+            const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
+            if (isNaN(purchasePrice) || purchasePrice <= 0) {
+                document.getElementById('purchasePriceError').classList.add('show');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function calculate() {
+            if (!validate()) {
+                return;
+            }
+
+            const spGoal = parseFloat(document.getElementById('spGoal').value);
+            const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
+
+            const tierValue = tierValues[selectedTierValue];
+
+            // Calculate Number of Copies Required
+            const numberCopiesExact = spGoal / tierValue;
+            const numberCopies = Math.round(numberCopiesExact);
+
+            // Calculate SG Cost
+            const sgCostExact = numberCopiesExact * purchasePrice;
+            const sgCost = Math.round(sgCostExact);
+
+            // Display results
+            document.getElementById('numberCopies').textContent = numberCopies;
+            document.getElementById('sgCost').textContent = sgCost;
+        }
+
+        function reset() {
+            document.getElementById('spGoal').value = '';
+            document.getElementById('purchasePrice').value = '';
+            selectedTierValue = '';
+            selectedValue.textContent = 'Select an Awakened Tier';
+            customSelectOptions.forEach(opt => opt.classList.remove('selected'));
+            document.getElementById('numberCopies').textContent = '-';
+            document.getElementById('sgCost').textContent = '-';
+            clearErrors();
+        }
+
+        // Allow Enter key to calculate
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                calculate();
+            }
+        });
+    </script>
+</body>
+</html>
