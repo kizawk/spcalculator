@@ -1,0 +1,2 @@
+# spcalculator
+Soul Power Calculator
